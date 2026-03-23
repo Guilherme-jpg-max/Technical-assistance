@@ -21,7 +21,7 @@ class PdfService {
 
     items.forEach(item => {
       const itemData = [
-        item._id.substring(0, 8) + "...", // Truncar ID para melhor visualização
+        item._id.substring(0, 8) + "...",
         item.nome_atendente,
         item.nome_cliente,
         item.modelo_aparelho,
