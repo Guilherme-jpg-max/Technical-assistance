@@ -1,16 +1,7 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
 const codigos = new Map();
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 exports.gerarCodigo = (email) => {
   const codigo = Math.floor(100000 + Math.random() * 900000).toString();
@@ -20,13 +11,14 @@ exports.gerarCodigo = (email) => {
 
 exports.enviarCodigo = async (email, codigo) => {
   try {
-    const info = await transporter.sendMail({
-      from: `"Sistema" <${process.env.EMAIL_USER}>`,
+    const { error } = await resend.emails.send({
+      from: 'onboarding@resend.dev',
       to: email,
       subject: 'Seu código de verificação',
       text: `Código: ${codigo} — válido por 5 minutos.`,
     });
-    console.log('Email enviado:', info.response);
+    if (error) console.error('Erro ao enviar email:', error);
+    else console.log('Email enviado com sucesso');
   } catch (err) {
     console.error('Erro ao enviar email:', err.message);
   }
