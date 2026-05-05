@@ -40,17 +40,13 @@ const swaggerDefinition = {
 };
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDefinition));
-<<<<<<< Updated upstream
-app.use(cors());
-=======
 
 app.use(cors({
-  origin: ['http://localhost:3000', process.env.FRONTEND_URL].filter(Boolean),
+  origin: ['http://localhost:5173', process.env.FRONTEND_URL].filter(Boolean),
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
->>>>>>> Stashed changes
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(logMiddleware);
