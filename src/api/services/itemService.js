@@ -1,89 +1,70 @@
-const { entradaAparelhos, orcamentos } = require("../../data/mockData");
-const { v4: uuidv4 } = require("uuid");
+const EntradaAparelho = require('../../models/EntradaAparelho');
+const Orcamento = require('../../models/Orcamento');
 
 class ItemService {
+
   static getAllEntradaAparelhos() {
-    return entradaAparelhos;
+    return EntradaAparelho.find().sort({ createdAt: -1 });
   }
 
   static getEntradaAparelhoById(id) {
-    return entradaAparelhos.find(item => item._id === id);
+    return EntradaAparelho.findById(id);
   }
 
   static createEntradaAparelho(data) {
-    const newItem = {
-      _id: uuidv4(),
-      nome_atendente: data.nome_atendente,
-      nome_cliente: data.nome_cliente,
-      numero_cliente: data.numero_cliente,
-      modelo_aparelho: data.modelo_aparelho,
-      marca_aparelho: data.marca_aparelho,
+    const novo = new EntradaAparelho({
+      nome_atendente:     data.nome_atendente,
+      nome_cliente:       data.nome_cliente,
+      numero_cliente:     data.numero_cliente,
+      modelo_aparelho:    data.modelo_aparelho,
+      marca_aparelho:     data.marca_aparelho,
       descricao_problema: data.descricao_problema,
-      status: "aguardando_orcamento",
-      data_entrada: new Date(),
-      data_previsao: data.data_previsao || null,
-      data_entrega: null,
-    };
-    entradaAparelhos.push(newItem);
-    return newItem;
+      imageUrl:           data.imageUrl || null,
+      status:             data.status || 'aguardando_orcamento',
+      data_previsao:      data.data_previsao || null,
+      data_entrega:       data.data_entrega || null,
+    });
+    return novo.save();
   }
 
   static updateEntradaAparelho(id, data) {
-    const index = entradaAparelhos.findIndex(item => item._id === id);
-    if (index !== -1) {
-      entradaAparelhos[index] = { ...entradaAparelhos[index], ...data };
-      return entradaAparelhos[index];
-    }
-    return null;
+    return EntradaAparelho.findByIdAndUpdate(id, data, { new: true });
   }
 
   static deleteEntradaAparelho(id) {
-    const initialLength = entradaAparelhos.length;
-    entradaAparelhos = entradaAparelhos.filter(item => item._id !== id);
-    return entradaAparelhos.length < initialLength;
+    return EntradaAparelho.findByIdAndDelete(id);
   }
 
-  static searchEntradaAparelhoByCodigo(codigo) {
-    // Para o mock considerei o _id como o "código"
-    return entradaAparelhos.find(item => item._id === codigo);
+  static searchEntradaAparelhoByCodigo(id) {
+    return EntradaAparelho.findById(id);
   }
 
   static getAllOrcamentos() {
-    return orcamentos;
+    return Orcamento.find().populate('fk_id_entrada').sort({ createdAt: -1 });
   }
 
   static getOrcamentoById(id) {
-    return orcamentos.find(item => item._id === id);
+    return Orcamento.findById(id).populate('fk_id_entrada');
   }
 
   static createOrcamento(data) {
-    const newOrcamento = {
-      _id: uuidv4(),
-      fk_id_entrada: data.fk_id_entrada,
-      nome_atendente: data.nome_atendente,
+    const novo = new Orcamento({
+      fk_id_entrada:     data.fk_id_entrada,
+      nome_atendente:    data.nome_atendente,
       descricao_servico: data.descricao_servico,
-      valor_orcamento: data.valor_orcamento,
-      aprovado: data.aprovado || false,
-      data_orcamento: new Date(),
-      observacoes: data.observacoes || null,
-    };
-    orcamentos.push(newOrcamento);
-    return newOrcamento;
+      valor_orcamento:   data.valor_orcamento,
+      aprovado:          data.aprovado || false,
+      observacoes:       data.observacoes || null,
+    });
+    return novo.save();
   }
 
   static updateOrcamento(id, data) {
-    const index = orcamentos.findIndex(item => item._id === id);
-    if (index !== -1) {
-      orcamentos[index] = { ...orcamentos[index], ...data };
-      return orcamentos[index];
-    }
-    return null;
+    return Orcamento.findByIdAndUpdate(id, data, { new: true });
   }
 
   static deleteOrcamento(id) {
-    const initialLength = orcamentos.length;
-    orcamentos = orcamentos.filter(item => item._id !== id);
-    return orcamentos.length < initialLength;
+    return Orcamento.findByIdAndDelete(id);
   }
 }
 
