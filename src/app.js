@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./api/docs/swagger.json');
 const { PORT } = require("./config");
+const connectDB = require("./config/database");
 
 const weekdayMiddleware = require("./api/middlewares/weekdayMiddleware");
 const logMiddleware = require("./api/middlewares/logMiddleware");
@@ -39,7 +40,6 @@ const swaggerDefinition = {
 };
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDefinition));
-
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -59,6 +59,8 @@ app.use((err, req, res, next) => {
   res.status(500).send("Algo deu errado!");
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+  });
 });
