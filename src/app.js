@@ -14,7 +14,6 @@ const logRoutes = require("./api/routes/logRoutes");
 
 const app = express();
 
-// Configuração do Swagger
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
@@ -22,7 +21,11 @@ const swaggerDefinition = {
     version: '1.0.0',
     description: 'Documentação da API de entrada de aparelhos e orçamentos',
   },
-  servers: [{ url: `http://localhost:${PORT}` }],
+  servers: [{
+    url: process.env.NODE_ENV === 'production'
+      ? 'https://technical-assistance-q0h0.onrender.com'
+      : `http://localhost:${PORT}`
+  }],
   components: {
     securitySchemes: {
       bearerAuth: {
