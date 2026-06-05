@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./api/swagger/swagger.json');
 const { PORT } = require("./config");
@@ -8,10 +10,14 @@ const connectDB = require("./config/database");
 
 const weekdayMiddleware = require("./api/middlewares/weekdayMiddleware");
 const logMiddleware = require("./api/middlewares/logMiddleware");
+const accessLogMiddleware = require("./api/middlewares/accessLogMiddleware");
 
 const authRoutes = require("./api/routes/authRoutes");
 const itemRoutes = require("./api/routes/itemRoutes");
 const logRoutes = require("./api/routes/logRoutes");
+const exportRoutes = require("./api/routes/exportRoutes");
+const monitoramentoRoutes = require("./api/routes/monitoramentoRoutes");
+const { scheduleDailyBackup } = require("./api/services/backupService");
 
 const app = express();
 
@@ -48,13 +54,17 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.static('public'));
 app.use(morgan("dev"));
+app.use(accessLogMiddleware);
 app.use(logMiddleware);
 app.use(weekdayMiddleware);
 
 app.use("/api/auth", authRoutes);
 app.use("/api", itemRoutes);
 app.use("/api", logRoutes);
+app.use("/api/export", exportRoutes);
+app.use("/api/relatorio", monitoramentoRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "API de Assistência Técnica funcionando!" });
@@ -69,7 +79,35 @@ module.exports = app;
 
 if (require.main === module) {
   connectDB().then(() => {
-    app.listen(PORT, () => {
+    const server = createServer(app);
+    const io = new Server(server, {
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+      },
+    });
+
+    io.on('connection', (socket) => {
+      console.log(`Socket conectado: ${socket.id}`);
+
+      socket.on('disconnect', () => {
+        console.log(`Socket desconectado: ${socket.id}`);
+      });
+    });
+
+    setInterval(() => {
+      const valor = Number((20 + Math.random() * 20).toFixed(2));
+      const payload = {
+        valor,
+        unidade: '°C',
+        timestamp: new Date().toISOString(),
+      };
+      io.emit('sensor-data', payload);
+    }, 3000);
+
+    scheduleDailyBackup();
+
+    server.listen(PORT, () => {
       console.log(`Servidor rodando na porta ${PORT}`);
     });
   });
