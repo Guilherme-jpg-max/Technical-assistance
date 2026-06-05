@@ -21,9 +21,14 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "nome_atendente": { "type": "string", "example": "João Silva" },
+                  "nome_cliente": { "type": "string", "example": "João Silva" },
                   "codigo": { "type": "string", "example": "AP001" },
-                  "descricao": { "type": "string", "example": "Notebook Dell" },
-                  "cliente": { "type": "string", "example": "João Silva" }
+                  "numero_cliente": { "type": "string", "example": "11999998888" },
+                  "modelo_aparelho": { "type": "string", "example": "Notebook Dell" },
+                  "marca_aparelho": { "type": "string", "example": "Dell" },
+                  "descricao_problema": { "type": "string", "example": "Tela quebrada" },
+                  "data_previsao": { "type": "string", "format": "date-time", "example": "2025-01-20T17:00:00Z" }
                 }
               }
             }
@@ -163,9 +168,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "aparelhoId": { "type": "string", "example": "AP001" },
-                  "valor": { "type": "number", "example": 350.00 },
-                  "descricao": { "type": "string", "example": "Troca de tela" }
+                  "fk_id_entrada": { "type": "string", "example": "650f8b123a4c2f0012345678" },
+                  "nome_atendente": { "type": "string", "example": "Maria Souza" },
+                  "descricao_servico": { "type": "string", "example": "Troca de tela" },
+                  "valor_orcamento": { "type": "number", "example": 350.00 },
+                  "aprovado": { "type": "boolean", "example": false },
+                  "observacoes": { "type": "string", "example": "Peça em falta" }
                 }
               }
             }
