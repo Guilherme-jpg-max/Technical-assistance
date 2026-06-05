@@ -1,5 +1,53 @@
 {
   "paths": {
+    "/api/auth/logar": {
+      "post": {
+        "summary": "Realiza o login do usuário",
+        "tags": ["Autenticação"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "admin@email.com" },
+                  "senha": { "type": "string", "example": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login realizado com sucesso" },
+          "401": { "description": "Credenciais inválidas" }
+        }
+      }
+    },
+    "/api/auth/verificar-2fa": {
+      "post": {
+        "summary": "Verifica o código 2FA e retorna o token",
+        "tags": ["Autenticação"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "admin@email.com" },
+                  "codigo": { "type": "string", "example": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Token retornado com sucesso" },
+          "401": { "description": "Código inválido ou expirado" }
+        }
+      }
+    },
     "/api/entrada-aparelhos": {
       "get": {
         "summary": "Lista todos os aparelhos",
@@ -247,53 +295,43 @@
         }
       }
     },
-    "/api/auth/logar": {
-      "post": {
-        "summary": "Realiza o login do usuário",
-        "tags": ["Autenticação"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": { "type": "string", "example": "admin@email.com" },
-                  "senha": { "type": "string", "example": "123456" }
-                }
+    "/api/export/csv": {
+      "get": {
+        "summary": "Exporta aparelhos e orçamentos em CSV",
+        "tags": ["Exportação"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "CSV gerado com sucesso",
+            "content": {
+              "text/csv": {
+                "schema": { "type": "string", "format": "binary" }
               }
             }
-          }
-        },
+          },
+          "401": { "description": "Não autorizado" },
+          "500": { "description": "Erro ao exportar CSV" }
+        }
+      }
+    },
+    "/api/relatorio/monitoramento": {
+      "get": {
+        "summary": "Gera relatório mensal de monitoramento de acessos em PDF",
+        "tags": ["Monitoramento"],
+        "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": { "description": "Login realizado com sucesso" },
-          "401": { "description": "Credenciais inválidas" }
-        }
-      }
-    },
-    "/api/auth/verificar-2fa": {
-  "post": {
-    "summary": "Verifica o código 2FA e retorna o token",
-    "tags": ["Autenticação"],
-    "requestBody": {
-      "required": true,
-      "content": {
-        "application/json": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "email": { "type": "string", "example": "admin@email.com" },
-              "codigo": { "type": "string", "example": "123456" }
+          "200": {
+            "description": "Relatório PDF gerado com sucesso",
+            "content": {
+              "application/pdf": {
+                "schema": { "type": "string", "format": "binary" }
+              }
             }
-          }
+          },
+          "401": { "description": "Não autorizado" },
+          "500": { "description": "Erro ao gerar relatório" }
         }
       }
-    },
-    "responses": {
-      "200": { "description": "Token retornado com sucesso" },
-      "401": { "description": "Código inválido ou expirado" }
     }
-  }
-}
   }
 }
