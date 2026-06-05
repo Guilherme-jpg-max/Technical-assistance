@@ -65,8 +65,12 @@ app.use((err, req, res, next) => {
   res.status(500).send("Algo deu errado!");
 });
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+module.exports = app;
+
+if (require.main === module) {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
+    });
   });
-});
+}
