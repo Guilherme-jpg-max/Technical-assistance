@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const entradaAparelhoSchema = new mongoose.Schema({
   nome_atendente:    { type: String, required: true },
   nome_cliente:      { type: String, required: true },
+  codigo:            { type: String, default: null },
   numero_cliente:    { type: String, required: true },
   modelo_aparelho:   { type: String, required: true },
   marca_aparelho:    { type: String, required: true },
