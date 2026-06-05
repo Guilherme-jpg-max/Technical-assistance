@@ -11,8 +11,6 @@ API REST para gerenciamento de uma assistência técnica, com controle de entrad
 - Swagger para documentação interativa
 - CORS configurado por origem
 
----
-
 ## Como rodar localmente
 
 ```bash
@@ -61,6 +59,18 @@ Todas as rotas protegidas exigem o header: `Authorization: Bearer <token>`
 | PUT | `/api/entrada-aparelhos/:id` | Atualiza os dados de um aparelho |
 | DELETE | `/api/entrada-aparelhos/:id` | Remove um aparelho |
 
+#### Campos esperados para `/api/entrada-aparelhos`
+- `nome_atendente` (string)
+- `nome_cliente` (string)
+- `codigo` (string, opcional)
+- `numero_cliente` (string)
+- `modelo_aparelho` (string)
+- `marca_aparelho` (string)
+- `descricao_problema` (string)
+- `imageUrl` (string, opcional)
+- `status` (string, opcional)
+- `data_previsao` (ISO date, opcional)
+- `data_entrega` (ISO date, opcional)
 
 ### Orçamentos — `/api/orcamentos`
 
@@ -70,6 +80,14 @@ Todas as rotas protegidas exigem o header: `Authorization: Bearer <token>`
 | POST | `/api/orcamentos` | Cria um novo orçamento |
 | PUT | `/api/orcamentos/:id` | Atualiza um orçamento |
 | DELETE | `/api/orcamentos/:id` | Remove um orçamento |
+
+#### Campos esperados para `/api/orcamentos`
+- `fk_id_entrada` (string)
+- `nome_atendente` (string)
+- `descricao_servico` (string)
+- `valor_orcamento` (number)
+- `aprovado` (boolean, opcional)
+- `observacoes` (string, opcional)
 
 ---
 
@@ -81,9 +99,9 @@ Todas as rotas protegidas exigem o header: `Authorization: Bearer <token>`
 
 ## Middlewares
 
-- authMiddleware** — valida o token JWT antes de acessar rotas protegidas
-- logMiddleware** — registra o horário e a rota de cada requisição realizada
-- weekdayMiddleware** — bloqueia o acesso à API fora do intervalo de segunda a sexta-feira
+- authMiddleware — valida o token JWT antes de acessar rotas protegidas
+- logMiddleware — registra o horário e a rota de cada requisição realizada
+- weekdayMiddleware — bloqueia o acesso à API fora do intervalo de segunda a sexta-feira
 
 ---
 
