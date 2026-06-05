@@ -15,6 +15,7 @@ class ItemService {
     const novo = new EntradaAparelho({
       nome_atendente:     data.nome_atendente,
       nome_cliente:       data.nome_cliente,
+      codigo:             data.codigo || null,
       numero_cliente:     data.numero_cliente,
       modelo_aparelho:    data.modelo_aparelho,
       marca_aparelho:     data.marca_aparelho,
@@ -35,8 +36,8 @@ class ItemService {
     return EntradaAparelho.findByIdAndDelete(id);
   }
 
-  static searchEntradaAparelhoByCodigo(id) {
-    return EntradaAparelho.findById(id);
+  static searchEntradaAparelhoByCodigo(codigo) {
+    return EntradaAparelho.findOne({ codigo });
   }
 
   static getAllOrcamentos() {
